@@ -21,7 +21,6 @@ import java.util.Map;
 import kotlin.jvm.functions.Function14;
 
 import com.discord.widgets.chat.list.model.WidgetChatListModelMessages$Companion$get$1;
-import com.discord.widgets.chat.list.model.WidgetChatListModelMessages2;
 import com.aliucord.api.PatcherAPI;
 import com.aliucord.patcher.InsteadHook;
 import de.robv.android.xposed.XC_MethodHook;
