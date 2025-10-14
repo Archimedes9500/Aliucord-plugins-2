@@ -22,14 +22,32 @@ import kotlin.jvm.functions.Function14;
 
 import com.discord.widgets.chat.list.model.WidgetChatListModelMessages$Companion$get$1;
 import com.aliucord.api.PatcherAPI;
-import com.aliucord.patcher.PreHook;
-import de.robv.android.xposed.XC_MethodHook;
+import com.aliucord.patcher.InsteadHook;
 
 public class Husk{
 	Husk(PatcherAPI patcher, List<String> ignoredUsers){
 		patcher.patch(WidgetChatListModelMessages$Companion$get$1.class.getDeclaredMethod("invoke", WidgetChatListModelMessages.MessagesWithMetadata.class, Channel.class, Map.class, List.class, Map.class, Long.class, Map.class, Long.class, boolean.class, boolean.class, boolean.class, long.class, Map.class, InviteEmbedModel.class, boolean.class),
-			new PreHook((XC_MethodHook.MethodHookParam frame, WidgetChatListModelMessages.MessagesWithMetadata messagesWithMetadata, Channel channel, Map<Long, Integer> map, List<Long> list, Map<Long, GuildMember> map2, Long l, Map<Long, GuildRole> map3, Long l2, boolean z2, boolean z3, boolean z4, long j, Map<Long, ComponentChatListState.ComponentStoreState> map4, InviteEmbedModel inviteEmbedModel, boolean ass) -> {
+			new InsteadHook(frame -> {
+				//this
 				WidgetChatListModelMessages$Companion$get$1 _this = (WidgetChatListModelMessages$Companion$get$1) frame.thisObject;
+
+				//args
+				WidgetChatListModelMessages.MessagesWithMetadata messagesWithMetadata = (WidgetChatListModelMessages.MessagesWithMetadata) frame.args[0];
+				Channel channel = (Channel) frame.args[1];
+				Map<Long, Integer> map = (Map<Long, Integer>) frame.args[2];
+				List<Long> list = (List<Long>) frame.args[3];
+				Map<Long, GuildMember> map2 = (Map<Long, GuildMember>) frame.args[4];
+				Long l = (Long) frame.args[5];
+				Map<Long, GuildRole> map3 = (Map<Long, GuildRole>) frame.args[6];
+				Long l2 = (Long) frame.args[7];
+				boolean z2 = (boolean) frame.args[8];
+				boolean z3 = (boolean) frame.args[9];
+				boolean z4 = (boolean) frame.args[10];
+				long j = (long) frame.args[11];
+				Map<Long, ComponentChatListState.ComponentStoreState> map4 = (Map<Long, ComponentChatListState.ComponentStoreState>) frame.args[12];
+				InviteEmbedModel inviteEmbedModel = (InviteEmbedModel) frame.args[13];
+				boolean ass = (boolean) frame.args[14];
+
 				Object obj;
 				boolean z5;
 				boolean z6;
@@ -160,7 +178,7 @@ public class Husk{
 					}
 				}
 				Message message8 = (Message) obj;
-				frame.setResult(new WidgetChatListModelMessages(items3, id3, id4, map2, longValue, message8 != null ? Long.valueOf(message8.getId()) : null));
+				return new WidgetChatListModelMessages(items3, id3, id4, map2, longValue, message8 != null ? Long.valueOf(message8.getId()) : null);
 			})
 		);
 	}
