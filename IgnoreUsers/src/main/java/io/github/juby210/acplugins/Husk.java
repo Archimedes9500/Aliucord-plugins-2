@@ -26,7 +26,7 @@ import com.aliucord.patcher.InsteadHook;
 
 public class Husk{
 	Husk(PatcherAPI patcher, List<String> ignoredUsers){
-		patcher.patch(try{WidgetChatListModelMessages$Companion$get$1.class.getDeclaredMethod("invoke", WidgetChatListModelMessages.MessagesWithMetadata.class, Channel.class, Map.class, List.class, Map.class, Long.class, Map.class, Long.class, boolean.class, boolean.class, boolean.class, long.class, Map.class, InviteEmbedModel.class, boolean.class);}catch(e: Exception){},
+		try{patcher.patch(WidgetChatListModelMessages$Companion$get$1.class.getDeclaredMethod("invoke", WidgetChatListModelMessages.MessagesWithMetadata.class, Channel.class, Map.class, List.class, Map.class, Long.class, Map.class, Long.class, boolean.class, boolean.class, boolean.class, long.class, Map.class, InviteEmbedModel.class, boolean.class),
 			new InsteadHook(frame -> {
 				//this
 				WidgetChatListModelMessages$Companion$get$1 _this = (WidgetChatListModelMessages$Companion$get$1) frame.thisObject;
@@ -180,6 +180,6 @@ public class Husk{
 				Message message8 = (Message) obj;
 				return new WidgetChatListModelMessages(items3, id3, id4, map2, longValue, message8 != null ? Long.valueOf(message8.getId()) : null);
 			})
-		);
+		);}catch(Exception e){};
 	}
 }
