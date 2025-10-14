@@ -75,7 +75,7 @@ class IgnoreUsers : Plugin() {
         patcher.after<`a$f`>("invoke", Any::class.java) { (_, avar: b.a.a.d.f.d.a) ->
             val layout = (receiver as b.a.a.d.a).requireView() as LinearLayout
             val ctx = layout.context
-            val baseIndex = layout.indexOfChild(view.getChildAt(1) as AppCompatTextView)
+            val baseIndex = layout.indexOfChild(layout.getChildAt(1) as AppCompatTextView)
             // Adds the buttom, if it already exists, don't add the button so it doesn't multiply :3
             layout.findViewById(viewId) ?: TextView(
                 ctx,
@@ -107,7 +107,7 @@ class IgnoreUsers : Plugin() {
         }
 
          // Adds the ignored message indicator
-         Husk(patcher)
+         Husk(patcher, ignoredUsers)
     }
 
     override fun stop(context: Context) = patcher.unpatchAll()
