@@ -25,7 +25,7 @@ import com.aliucord.api.PatcherAPI;
 import com.aliucord.patcher.InsteadHook;
 import de.robv.android.xposed.XC_MethodHook;
 
-public class Husk<T>{
+public class Husk{
 	Husk(PatcherAPI patcher, List<String> ignoredUsers){
 		patcher.patch(WidgetChatListModelMessages$Companion$get$1.getDeclaredMethod("invoke", WidgetChatListModelMessages.MessagesWithMetadata.class, Channel.class, Map.class, List.class, Map.class, Long.class, Map.class, Long.class, boolean.class, boolean.class, boolean.class, long.class, Map.class, InviteEmbedModel.class, boolean.class),
 			InsteadHook((XC_MethodHook.MethodHookParam frame, WidgetChatListModelMessages.MessagesWithMetadata messagesWithMetadata, Channel channel, Map<Long, Integer> map, List<Long> list, Map<Long, GuildMember> map2, Long l, Map<Long, GuildRole> map3, Long l2, boolean z2, boolean z3, boolean z4, long j, Map<Long, ComponentChatListState.ComponentStoreState> map4, InviteEmbedModel inviteEmbedModel, boolean ass) -> {
@@ -140,7 +140,7 @@ public class Husk<T>{
 				long id4 = message7 != null ? message7.getId() : 0L;
 				m.checkNotNullExpressionValue(l, "newMessagesMarkerMessageId");
 				long longValue = l.longValue();
-				Iterator<T> it = messagesWithMetadata.getMessages().iterator();
+				Iterator<Message> it = messagesWithMetadata.getMessages().iterator();
 				while (true) {
 					if (!it.hasNext()) {
 						obj = null;
