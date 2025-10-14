@@ -22,13 +22,13 @@ import kotlin.jvm.functions.Function14;
 
 import com.discord.widgets.chat.list.model.WidgetChatListModelMessages$Companion$get$1;
 import com.aliucord.api.PatcherAPI;
-import com.aliucord.patcher.InsteadHook;
+import com.aliucord.patcher.PreHook;
 import de.robv.android.xposed.XC_MethodHook;
 
 public class Husk{
 	Husk(PatcherAPI patcher, List<String> ignoredUsers){
 		patcher.patch(WidgetChatListModelMessages$Companion$get$1.class.getDeclaredMethod("invoke", WidgetChatListModelMessages.MessagesWithMetadata.class, Channel.class, Map.class, List.class, Map.class, Long.class, Map.class, Long.class, boolean.class, boolean.class, boolean.class, long.class, Map.class, InviteEmbedModel.class, boolean.class),
-			new InsteadHook((XC_MethodHook.MethodHookParam frame, WidgetChatListModelMessages.MessagesWithMetadata messagesWithMetadata, Channel channel, Map<Long, Integer> map, List<Long> list, Map<Long, GuildMember> map2, Long l, Map<Long, GuildRole> map3, Long l2, boolean z2, boolean z3, boolean z4, long j, Map<Long, ComponentChatListState.ComponentStoreState> map4, InviteEmbedModel inviteEmbedModel, boolean ass) -> {
+			new PreHook((XC_MethodHook.MethodHookParam frame, WidgetChatListModelMessages.MessagesWithMetadata messagesWithMetadata, Channel channel, Map<Long, Integer> map, List<Long> list, Map<Long, GuildMember> map2, Long l, Map<Long, GuildRole> map3, Long l2, boolean z2, boolean z3, boolean z4, long j, Map<Long, ComponentChatListState.ComponentStoreState> map4, InviteEmbedModel inviteEmbedModel, boolean ass) -> {
 				WidgetChatListModelMessages$Companion$get$1 _this = (WidgetChatListModelMessages$Companion$get$1) frame.thisObject;
 				Object obj;
 				boolean z5;
@@ -160,7 +160,7 @@ public class Husk{
 					}
 				}
 				Message message8 = (Message) obj;
-				return new WidgetChatListModelMessages(items3, id3, id4, map2, longValue, message8 != null ? Long.valueOf(message8.getId()) : null);
+				frame.setResult(new WidgetChatListModelMessages(items3, id3, id4, map2, longValue, message8 != null ? Long.valueOf(message8.getId()) : null));
 			})
 		);
 	}
