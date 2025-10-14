@@ -29,7 +29,7 @@ public class Husk{
 	Husk(PatcherAPI patcher, List<String> ignoredUsers){
 		patcher.patch(WidgetChatListModelMessages$Companion$get$1.getDeclaredMethod("invoke", WidgetChatListModelMessages.MessagesWithMetadata.class, Channel.class, Map.class, List.class, Map.class, Long.class, Map.class, Long.class, boolean.class, boolean.class, boolean.class, long.class, Map.class, InviteEmbedModel.class),
 			InsteadHook((MethodHookParam frame, WidgetChatListModelMessages.MessagesWithMetadata messagesWithMetadata, Channel channel, Map<Long, Integer> map, List<Long> list, Map<Long, GuildMember> map2, Long l, Map<Long, GuildRole> map3, Long l2, boolean z2, boolean z3, boolean z4, long j, Map<Long, ComponentChatListState.ComponentStoreState> map4, InviteEmbedModel inviteEmbedModel) -> {
-				WidgetChatListModelMessages$Companion$get$1 this = (WidgetChatListModelMessages$Companion$get$1) frame.thisObject;
+				WidgetChatListModelMessages$Companion$get$1 _this = (WidgetChatListModelMessages$Companion$get$1) frame.thisObject;
 				Object obj;
 				boolean z5;
 				boolean z6;
@@ -39,7 +39,7 @@ public class Husk{
 				Message message2;
 				WidgetChatListModelMessages.Companion companion;
 				WidgetChatListModelMessages.Items items;
-				WidgetChatListModelMessages$Companion$get$1 widgetChatListModelMessages$Companion$get$1 = this;
+				WidgetChatListModelMessages$Companion$get$1 widgetChatListModelMessages$Companion$get$1 = _this;
 				WidgetChatListModelMessages.MessagesWithMetadata messagesWithMetadata2 = messagesWithMetadata;
 				Map<Long, Integer> map5 = map;
 				m.checkNotNullParameter(messagesWithMetadata2, "messagesWithMetadata");
@@ -121,11 +121,11 @@ public class Husk{
 					if (!z9) {
 						m.checkNotNullExpressionValue(l, str);
 						items2 = items;
-						widgetChatListModelMessages$Companion$get$1 = this;
+						widgetChatListModelMessages$Companion$get$1 = _this;
 						z9 = WidgetChatListModelMessages.Companion.access$tryAddNewMessagesSeparator(companion, items2, l.longValue(), z10, message2.getId(), widgetChatListModelMessages$Companion$get$1.$channel);
 					} else {
 						items2 = items;
-						widgetChatListModelMessages$Companion$get$1 = this;
+						widgetChatListModelMessages$Companion$get$1 = _this;
 					}
 					messagesWithMetadata2 = messagesWithMetadata;
 					map5 = map;
