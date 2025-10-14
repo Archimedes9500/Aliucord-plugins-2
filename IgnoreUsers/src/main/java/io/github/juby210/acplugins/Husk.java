@@ -25,7 +25,7 @@ import com.aliucord.api.PatcherAPI;
 import com.aliucord.patcher.InsteadHook;
 
 public class Husk{
-	Husk(PatcherAPI patcher){
+	Husk(PatcherAPI patcher, List<String> ignoredUsers){
 		patcher.patch(WidgetChatListModelMessages$Companion$get$1.getDeclaredMethod("invoke", WidgetChatListModelMessages.MessagesWithMetadata.class, Channel.class, Map.class, List.class, Map.class, Long.class, Map.class, Long.class, boolean.class, boolean.class, boolean.class, long.class, Map.class, InviteEmbedModel.class),
 			InsteadHook((frame, WidgetChatListModelMessages.MessagesWithMetadata messagesWithMetadata, Channel channel, Map<Long, Integer> map, List<Long> list, Map<Long, GuildMember> map2, Long l, Map<Long, GuildRole> map3, Long l2, boolean z2, boolean z3, boolean z4, long j, Map<Long, ComponentChatListState.ComponentStoreState> map4, InviteEmbedModel inviteEmbedModel) -> {
 				WidgetChatListModelMessages$Companion$get$1 this = (WidgetChatListModelMessages$Companion$get$1) frame.thisObject
