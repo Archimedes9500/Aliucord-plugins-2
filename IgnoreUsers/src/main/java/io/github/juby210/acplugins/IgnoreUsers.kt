@@ -64,7 +64,7 @@ class IgnoreUsers : Plugin() {
     }
 
     override fun start(c: Context) {
-        var ignoredUsers = listOf<String>()
+        var ignoredUsers = mutableListOf<String>()
 
         // Get the ignored users list when GatewayAPI is ready
         GatewayAPI.onEvent<Ready>("READY") {
