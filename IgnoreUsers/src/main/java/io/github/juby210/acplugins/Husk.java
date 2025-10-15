@@ -24,6 +24,7 @@ import com.discord.widgets.chat.list.model.WidgetChatListModelMessages$Companion
 import com.aliucord.api.PatcherAPI;
 import com.aliucord.patcher.InsteadHook;
 
+@SuppressWarnings("unreachable")
 public class Husk{
 	Husk(PatcherAPI patcher, List<String> ignoredUsers){
 		try{patcher.patch(WidgetChatListModelMessages$Companion$get$1.class.getDeclaredMethod("invoke", WidgetChatListModelMessages.MessagesWithMetadata.class, Channel.class, Map.class, List.class, Map.class, Long.class, Map.class, Long.class, boolean.class, boolean.class, boolean.class, long.class, Map.class, InviteEmbedModel.class, boolean.class),
