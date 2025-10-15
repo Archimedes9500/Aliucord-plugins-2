@@ -43,7 +43,7 @@ data class Ready(val relationships: List<Relationship>)
 @AliucordPlugin
 class IgnoreUsers : Plugin() {
     val viewId = View.generateViewId()
-    var ignoredUsers: MutableList<String> = mutableListOf<String>()
+    public var ignoredUsers: MutableList<String> = mutableListOf<String>()
 
     // Adds the function for ignoring and unignoring a user.
     private fun ignoreUser(user: Long, isAlreadyIgnored: Boolean) {
