@@ -43,10 +43,10 @@ data class Ready(val relationships: List<Relationship>)
 @AliucordPlugin
 class IgnoreUsers : Plugin() {
     val viewId = View.generateViewId()
-    public var ignoredUsers: MutableList<String> = mutableListOf<String>()
+	@JvmField var ignoredUsers: MutableList<String> = mutableListOf<String>()
 
     // Adds the function for ignoring and unignoring a user.
-    private fun ignoreUser(user: Long, isAlreadyIgnored: Boolean) {
+    fun ignoreUser(user: Long, isAlreadyIgnored: Boolean) {
         Utils.threadPool.execute {
             try {
                 // Sends a PUT request to Discord for ignoring, if the user isn't ignored, it'll unignore
