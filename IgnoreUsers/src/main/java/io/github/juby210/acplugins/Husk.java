@@ -49,7 +49,7 @@ public class Husk{
 				InviteEmbedModel inviteEmbedModel = (InviteEmbedModel) frame.args[13];
 				boolean ass = (boolean) frame.args[14];
 
-				(new Logger("Husk")).debug(map.toString());
+				(new Logger("Husk")).debug(map.toString()+"\n"+ignoredUsers.toString());
 
 				Object obj;
 				boolean z5;
