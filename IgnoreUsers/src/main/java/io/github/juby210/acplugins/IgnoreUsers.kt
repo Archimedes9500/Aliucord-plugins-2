@@ -105,7 +105,7 @@ class IgnoreUsers : Plugin() {
         }
 
          // Adds the ignored message indicator
-         Husk(patcher, ignoredUsers)
+         Husk(this, patcher)
     }
 
     override fun stop(context: Context) = patcher.unpatchAll()
