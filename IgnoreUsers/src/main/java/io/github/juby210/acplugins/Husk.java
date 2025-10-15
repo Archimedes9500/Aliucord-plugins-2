@@ -24,6 +24,7 @@ import com.discord.widgets.chat.list.model.WidgetChatListModelMessages$Companion
 import com.aliucord.api.PatcherAPI;
 import com.aliucord.patcher.InsteadHook;
 import com.aliucord.Logger;
+//import kotlin.collections.MutableList;
 
 public class Husk{
 	Husk(PatcherAPI patcher, List<String> ignoredUsers){
