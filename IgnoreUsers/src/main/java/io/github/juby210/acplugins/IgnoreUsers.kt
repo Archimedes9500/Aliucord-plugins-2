@@ -43,6 +43,7 @@ data class Ready(val relationships: List<Relationship>)
 @AliucordPlugin
 class IgnoreUsers : Plugin() {
     val viewId = View.generateViewId()
+    var ignoredUsers: MutableList<String> = mutableListOf<String>()
 
     // Adds the function for ignoring and unignoring a user.
     private fun ignoreUser(user: Long, isAlreadyIgnored: Boolean) {
@@ -64,7 +65,6 @@ class IgnoreUsers : Plugin() {
     }
 
     override fun start(c: Context) {
-        var ignoredUsers: MutableList<String> = mutableListOf<String>()
 
         // Get the ignored users list when GatewayAPI is ready
         GatewayAPI.onEvent<Ready>("READY") {
