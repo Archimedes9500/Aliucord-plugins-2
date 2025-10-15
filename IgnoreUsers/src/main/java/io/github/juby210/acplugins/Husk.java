@@ -24,10 +24,9 @@ import com.discord.widgets.chat.list.model.WidgetChatListModelMessages$Companion
 import com.aliucord.api.PatcherAPI;
 import com.aliucord.patcher.InsteadHook;
 import com.aliucord.Logger;
-//import kotlin.collections.MutableList;
 
 public class Husk{
-	Husk(PatcherAPI patcher, List<String> ignoredUsers){
+	Husk(IgnoreUsers instance, PatcherAPI patcher){
 		try{patcher.patch(WidgetChatListModelMessages$Companion$get$1.class.getDeclaredMethod("invoke", WidgetChatListModelMessages.MessagesWithMetadata.class, Channel.class, Map.class, List.class, Map.class, Long.class, Map.class, Long.class, boolean.class, boolean.class, boolean.class, long.class, Map.class, InviteEmbedModel.class, boolean.class),
 			new InsteadHook(frame -> {
 				//this
@@ -50,7 +49,7 @@ public class Husk{
 				InviteEmbedModel inviteEmbedModel = (InviteEmbedModel) frame.args[13];
 				boolean ass = (boolean) frame.args[14];
 
-				(new Logger("Husk")).debug(map.toString()+"\n"+ignoredUsers.toString());
+				(new Logger("Husk")).debug(map.toString()+"\n"+instance.ignoredUsers.toString());
 
 				Object obj;
 				boolean z5;
@@ -96,10 +95,10 @@ public class Husk{
 					Integer type = message5.getType();
 					if (type != null && type.intValue() == 21) {
 						User author = ((Message) WidgetChatListModelMessages.Companion.access$getThreadStarterMessageAndChannel(companion2, channel, widgetChatListModelMessages$Companion$get$1.$channel, message5, messagesWithMetadata2).getFirst()).getAuthor();
-						z6 = map5.containsKey(author != null ? Long.valueOf(author.getId()) : null) || ignoredUsers.contains(author != null ? Long.toString(author.getId()) : null);
+						z6 = map5.containsKey(author != null ? Long.valueOf(author.getId()) : null) || instance.ignoredUsers.contains(author != null ? Long.toString(author.getId()) : null);
 					} else {
 						User author2 = message5.getAuthor();
-						z6 = map5.containsKey(author2 != null ? Long.valueOf(author2.getId()) : null) || ignoredUsers.contains(author2 != null ? Long.toString(author2.getId()) : null);
+						z6 = map5.containsKey(author2 != null ? Long.valueOf(author2.getId()) : null) || instance.ignoredUsers.contains(author2 != null ? Long.toString(author2.getId()) : null);
 					}
 					if (!z6 || (i2 = i2 + 1) != 1) {
 						z7 = z8;
