@@ -48,6 +48,8 @@ public class Husk{
 				InviteEmbedModel inviteEmbedModel = (InviteEmbedModel) frame.args[13];
 				boolean ass = (boolean) frame.args[14];
 
+				com.aliucord.Logger("Husk").debug(map);
+
 				Object obj;
 				boolean z5;
 				boolean z6;
