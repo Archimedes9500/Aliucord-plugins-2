@@ -23,7 +23,6 @@ import kotlin.jvm.functions.Function14;
 import com.discord.widgets.chat.list.model.WidgetChatListModelMessages$Companion$get$1;
 import com.aliucord.api.PatcherAPI;
 import com.aliucord.patcher.InsteadHook;
-import com.aliucord.Logger;
 
 public class Husk{
 	Husk(PatcherAPI patcher, List<String> ignoredUsers){
@@ -48,8 +47,6 @@ public class Husk{
 				Map<Long, ComponentChatListState.ComponentStoreState> map4 = (Map<Long, ComponentChatListState.ComponentStoreState>) frame.args[12];
 				InviteEmbedModel inviteEmbedModel = (InviteEmbedModel) frame.args[13];
 				boolean ass = (boolean) frame.args[14];
-
-				Logger("Husk").debug(map);
 
 				Object obj;
 				boolean z5;
@@ -95,10 +92,10 @@ public class Husk{
 					Integer type = message5.getType();
 					if (type != null && type.intValue() == 21) {
 						User author = ((Message) WidgetChatListModelMessages.Companion.access$getThreadStarterMessageAndChannel(companion2, channel, widgetChatListModelMessages$Companion$get$1.$channel, message5, messagesWithMetadata2).getFirst()).getAuthor();
-						z6 = map5.containsKey(author != null ? Long.valueOf(author.getId()) : null) || ignoredUsers.contains(author != null ? Long.valueOf(author.getId()) : null);
+						z6 = map5.containsKey(author != null ? Long.valueOf(author.getId()) : null) || ignoredUsers.contains(author != null ? author.getId().toString() : null);
 					} else {
 						User author2 = message5.getAuthor();
-						z6 = map5.containsKey(author2 != null ? Long.valueOf(author2.getId()) : null) || ignoredUsers.contains(author2 != null ? Long.valueOf(author2.getId()) : null);
+						z6 = map5.containsKey(author2 != null ? Long.valueOf(author2.getId()) : null) || ignoredUsers.contains(author2 != null ? author2.getId().toString() : null);
 					}
 					if (!z6 || (i2 = i2 + 1) != 1) {
 						z7 = z8;
