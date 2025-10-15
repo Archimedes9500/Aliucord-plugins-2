@@ -64,11 +64,11 @@ class IgnoreUsers : Plugin() {
     }
 
     override fun start(c: Context) {
-        var ignoredUsers = mutableListOf<String>()
+        var ignoredUsers: MutableList<String> = mutableListOf<String>()
 
         // Get the ignored users list when GatewayAPI is ready
         GatewayAPI.onEvent<Ready>("READY") {
-            ignoredUsers = it.relationships.filter { it.user_ignored ?: false }.map { it.id }
+            ignoredUsers = it.relationships.filter { it.user_ignored ?: false }.map { it.id }.toMutableList()
             Logger("IgnoreUsers").info("Ignored user :3 $ignoredUsers")
         }
 		// Patches the user menu so it includes ignoring
@@ -94,12 +94,10 @@ class IgnoreUsers : Plugin() {
                 setOnClickListener {
                     if (ignoredUsers.contains(avar.a.id.toString())) {
                         ignoreUser(avar.a.id, true)
-                        ignoredUsers =
-                            ignoredUsers - avar.a.id.toString() // Removes ignored user from list
+                        ignoredUsers.remove(avar.a.id.toString())
                     } else {
                         ignoreUser(avar.a.id, false)
-                        ignoredUsers =
-                            ignoredUsers + avar.a.id.toString() // Adds ignored user to list
+                        ignoredUsers.add(avar.a.id.toString())
                     }
                 }
                 layout.addView(this, baseIndex + 1) // Adds view
@@ -107,7 +105,7 @@ class IgnoreUsers : Plugin() {
         }
 
          // Adds the ignored message indicator
-         Husk(patcher, ignoredUsers)
+         Husk(patcher, ignoredUsers as java.util.List<String>)
     }
 
     override fun stop(context: Context) = patcher.unpatchAll()
