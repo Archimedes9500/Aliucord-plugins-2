@@ -23,7 +23,7 @@ import kotlin.jvm.functions.Function14;
 import com.discord.widgets.chat.list.model.WidgetChatListModelMessages$Companion$get$1;
 import com.aliucord.api.PatcherAPI;
 import com.aliucord.patcher.InsteadHook;
-import com aliucord.Logger;
+import com.aliucord.Logger;
 
 public class Husk{
 	Husk(PatcherAPI patcher, List<String> ignoredUsers){
@@ -49,7 +49,7 @@ public class Husk{
 				InviteEmbedModel inviteEmbedModel = (InviteEmbedModel) frame.args[13];
 				boolean ass = (boolean) frame.args[14];
 
-				new Logger("Husk").debug(map.toString());
+				(new Logger("Husk")).debug(map.toString());
 
 				Object obj;
 				boolean z5;
