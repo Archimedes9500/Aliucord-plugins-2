@@ -92,10 +92,10 @@ public class Husk{
 					Integer type = message5.getType();
 					if (type != null && type.intValue() == 21) {
 						User author = ((Message) WidgetChatListModelMessages.Companion.access$getThreadStarterMessageAndChannel(companion2, channel, widgetChatListModelMessages$Companion$get$1.$channel, message5, messagesWithMetadata2).getFirst()).getAuthor();
-						z6 = map5.containsKey(author != null ? Long.valueOf(author.getId()) : null);
+						z6 = map5.containsKey(author != null ? Long.valueOf(author.getId()) : null) || ignoredUsers.contains(author != null ? Long.valueOf(author.getId()) : null);
 					} else {
 						User author2 = message5.getAuthor();
-						z6 = map5.containsKey(author2 != null ? Long.valueOf(author2.getId()) : null);
+						z6 = map5.containsKey(author2 != null ? Long.valueOf(author2.getId()) : null) || ignoredUsers.contains(author2 != null ? Long.valueOf(author2.getId()) : null);
 					}
 					if (!z6 || (i2 = i2 + 1) != 1) {
 						z7 = z8;
