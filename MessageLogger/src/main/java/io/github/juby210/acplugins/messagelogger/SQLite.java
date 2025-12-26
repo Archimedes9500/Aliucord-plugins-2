@@ -269,10 +269,10 @@ public final class SQLite extends SQLiteOpenHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        db.beginTransaction();
         try {
             String query = "ATTACH DATABASE ? AS exportdb";
             db.execSQL(query, new Object[]{ exported });
+            db.beginTransaction();
             db.execSQL("DROP TABLE IF EXISTS exportdb." + TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS exportdb." + TABLE_NAME_EDITS);
             db.execSQL("DROP TABLE IF EXISTS exportdb." + TABLE_NAME_GUILDS);
@@ -330,3 +330,4 @@ public final class SQLite extends SQLiteOpenHelper {
         onCreate(db);
     }
 }
+
