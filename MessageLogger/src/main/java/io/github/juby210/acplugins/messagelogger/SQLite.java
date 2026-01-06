@@ -236,10 +236,10 @@ public final class SQLite extends SQLiteOpenHelper {
             Utils.showToast("Cannot import database from '" + exported + "' as it does not exist");
             return;
         }
-        db.beginTransaction();
         try {
             String query = "ATTACH DATABASE ? AS exportdb";
             db.execSQL(query, new Object[]{ exported });
+            db.beginTransaction();
             query = "INSERT INTO " + TABLE_NAME + " SELECT * FROM exportdb." + TABLE_NAME;
             db.execSQL(query);
             query = "INSERT INTO " + TABLE_NAME_EDITS + " SELECT * FROM exportdb." + TABLE_NAME_EDITS;
@@ -330,4 +330,5 @@ public final class SQLite extends SQLiteOpenHelper {
         onCreate(db);
     }
 }
+
 
