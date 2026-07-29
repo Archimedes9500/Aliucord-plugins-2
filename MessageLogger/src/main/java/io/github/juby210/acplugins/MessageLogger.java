@@ -138,7 +138,7 @@ public final class MessageLogger extends Plugin {
     }
 
     private CopyOnWriteArrayList<Long> hiddenEdits = new CopyOnWriteArrayList<>();
-    private var fHolder = StoreMessages.getDeclaredField("holder");
+    private java.lang.reflect.Field fHolder = StoreMessages.getDeclaredField("holder");
 
     private void patchWidgetChatListActions() throws Throwable {
         var hideIcon = Utils.getAppContext().getDrawable(com.lytefast.flexinput.R.e.design_ic_visibility_off).mutate();
