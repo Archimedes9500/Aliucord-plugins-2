@@ -166,9 +166,9 @@ public final class MessageLogger extends Plugin {
                                 sqlite.removeDeletedMessage(messageId);
                             }
                             if (isEdited) {
-                                hiddenEdits.addIfAbsent(messageId);
-                                StoreStream.getMessages().handleMessageUpdate(message.synthesizeApiMessage());
-                                hiddenEdits.addIfAbsent(messageId);
+                                //hiddenEdits.addIfAbsent(messageId);
+                                //StoreStream.getMessages().handleMessageUpdate(message.synthesizeApiMessage());
+                                //hiddenEdits.addIfAbsent(messageId);
                                 sqlite.removeEditedMessage(messageId);
                             }
                             Utils.showToast("Removed From Logs");
