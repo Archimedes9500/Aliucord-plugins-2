@@ -177,7 +177,7 @@ public final class MessageLogger extends Plugin {
                                         fHolder.get(StoreStream.getMessages()),
                                         new Object[]{ message.getChannelId(), List.of(messageId) }
                                     );
-                                } catch(Exception: e){}
+                                } catch(Exception e){}
                             }
                             if (isEdited) {
                                 hiddenEdits.addIfAbsent(messageId);
