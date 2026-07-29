@@ -404,7 +404,7 @@ public final class MessageLogger extends Plugin {
                         " (deleted: " + TimeUtils.toReadableTimeString(context, record.deleteData.time, clock) + ")");
                 }
 
-                if (record.editHistory.size() > 0 && !hiddenEdits.contains(id)) {
+                if (record.editHistory.size() > 0) {
                     var data = ((WidgetChatListItem) param.thisObject).adapter.getData();
                     if (data != null) {
                         MessagePreprocessor messagePreprocessor = (MessagePreprocessor) getMessagePreprocessor.invoke(
