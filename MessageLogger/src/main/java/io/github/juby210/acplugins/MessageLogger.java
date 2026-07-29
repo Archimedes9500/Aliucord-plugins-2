@@ -47,6 +47,7 @@ import com.facebook.drawee.span.DraweeSpanStringBuilder;
 import com.google.gson.stream.JsonReader;
 import de.robv.android.xposed.XposedBridge;
 
+import java.lang.reflect.*;
 import java.io.StringReader;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
