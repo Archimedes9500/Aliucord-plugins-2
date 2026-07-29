@@ -162,12 +162,12 @@ public final class MessageLogger extends Plugin {
                         lay.addView(tw, lay.getChildCount());
                         tw.setOnClickListener((v) -> {
                             if (isDeleted) {
-                                //StoreStream.getMessages().handleMessageDelete(new ModelMessageDelete(message.getChannelId(), messageId));
+                                StoreStream.getMessages().handleMessageDelete(new ModelMessageDelete(message.getChannelId(), messageId));
                                 sqlite.removeDeletedMessage(messageId);
                             }
                             if (isEdited) {
                                 //hiddenEdits.addIfAbsent(messageId);
-                                StoreStream.getMessages().handleMessageUpdate(message.synthesizeApiMessage());
+                                //StoreStream.getMessages().handleMessageUpdate(message.synthesizeApiMessage());
                                 //hiddenEdits.addIfAbsent(messageId);
                                 sqlite.removeEditedMessage(messageId);
                             }
