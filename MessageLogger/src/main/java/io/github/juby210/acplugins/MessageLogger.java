@@ -171,11 +171,13 @@ public final class MessageLogger extends Plugin {
                         tw.setOnClickListener((v) -> {
                             if (isDeleted) {
                                 sqlite.removeDeletedMessage(messageId);
-                                XposedBridge.invokeOriginalMethod(
-                                    mDeleteMessages,
-                                    fHolder.get(StoreStream.getMessages()),
-                                    new Object[]{ message.getChannelId(), List.of(messageId) }
-                                );
+                                try{
+                                    XposedBridge.invokeOriginalMethod(
+                                        mDeleteMessages,
+                                        fHolder.get(StoreStream.getMessages()),
+                                        new Object[]{ message.getChannelId(), List.of(messageId) }
+                                    );
+                                } catch(Exception: e){}
                             }
                             if (isEdited) {
                                 hiddenEdits.addIfAbsent(messageId);
