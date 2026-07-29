@@ -45,6 +45,7 @@ import com.discord.widgets.guilds.contextmenu.GuildContextMenuViewModel;
 import com.discord.widgets.guilds.contextmenu.WidgetGuildContextMenu;
 import com.facebook.drawee.span.DraweeSpanStringBuilder;
 import com.google.gson.stream.JsonReader;
+import de.robv.android.xposed.XposedBridge;
 
 import java.io.StringReader;
 import java.util.*;
