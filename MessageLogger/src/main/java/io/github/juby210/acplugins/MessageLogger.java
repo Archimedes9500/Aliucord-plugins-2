@@ -179,7 +179,7 @@ public final class MessageLogger extends Plugin {
                                         fHolder.get(StoreStream.getMessages()),
                                         new Object[]{ message.getChannelId(), List.of(messageId) }
                                     );
-                                } catch(e Exception) {}
+                                } catch(Exception e) {}
                             }
                             if (isEdited) {
                                 hiddenEdits.addIfAbsent(messageId);
@@ -190,7 +190,7 @@ public final class MessageLogger extends Plugin {
                                         fHolder.get(StoreStream.getMessages()),
                                         new Object[]{ message.synthesizeApiMessage() }
                                     );
-                                } catch(e Exception) {}
+                                } catch(Exception e) {}
                             }
                             Utils.showToast("Removed From Logs");
                             ((WidgetChatListActions) cf.thisObject).dismiss();
