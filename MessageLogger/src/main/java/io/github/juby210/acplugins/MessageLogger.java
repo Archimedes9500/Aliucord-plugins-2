@@ -138,7 +138,7 @@ public final class MessageLogger extends Plugin {
     }
 
     private CopyOnWriteArrayList<Long> hiddenEdits = new CopyOnWriteArrayList<>();
-    private java.lang.reflect.Field fHolder = StoreMessages.getDeclaredField("holder");
+    private java.lang.reflect.Field fHolder = StoreMessages.class.getDeclaredField("holder");
 
     private void patchWidgetChatListActions() throws Throwable {
         var hideIcon = Utils.getAppContext().getDrawable(com.lytefast.flexinput.R.e.design_ic_visibility_off).mutate();
@@ -167,8 +167,8 @@ public final class MessageLogger extends Plugin {
                                 sqlite.removeDeletedMessage(messageId);
                                 XposedBridge.invokeOriginalMethod(
                                     StoreMessagesHolder.class.getDeclaredMethod("deleteMessages", long.class, List.class),
-                                    tHolder.get(StoreStream.getMessages()),
-                                    new Object[]{ message.getChannelId(), new List.of(messageId) }
+                                    fHolder.get(StoreStream.getMessages()),
+                                    new Object[]{ message.getChannelId(), List.of(messageId) }
                                 );
                             }
                             if (isEdited) {
