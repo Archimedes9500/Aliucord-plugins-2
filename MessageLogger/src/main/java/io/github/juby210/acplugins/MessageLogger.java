@@ -58,8 +58,12 @@ import kotlin.jvm.functions.Function1;
 @SuppressLint("UseCompatLoadingForDrawables")
 @SuppressWarnings({ "unchecked", "CommentedOutCode" })
 public final class MessageLogger extends Plugin {
-    public MessageLogger() {
+    public MessageLogger() throws Exception {
         settingsTab = new SettingsTab(PluginSettings.class, SettingsTab.Type.BOTTOM_SHEET);
+        fHolder = StoreMessages.class.getDeclaredField("holder");
+        fHolder.setAccessible(true);
+        mDeleteMessages = StoreMessagesHolder.class.getDeclaredMethod("deleteMessages", long.class, List.class);
+        mDeleteMessages.setAccessible(true);
     }
 
     public static WidgetChatList chatList;
@@ -138,7 +142,8 @@ public final class MessageLogger extends Plugin {
     }
 
     private CopyOnWriteArrayList<Long> hiddenEdits = new CopyOnWriteArrayList<>();
-    private java.lang.reflect.Field fHolder = StoreMessages.class.getDeclaredField("holder");
+    private Field fHolder;
+    private Method mDeleteMessages;
 
     private void patchWidgetChatListActions() throws Throwable {
         var hideIcon = Utils.getAppContext().getDrawable(com.lytefast.flexinput.R.e.design_ic_visibility_off).mutate();
@@ -166,7 +171,7 @@ public final class MessageLogger extends Plugin {
                             if (isDeleted) {
                                 sqlite.removeDeletedMessage(messageId);
                                 XposedBridge.invokeOriginalMethod(
-                                    StoreMessagesHolder.class.getDeclaredMethod("deleteMessages", long.class, List.class),
+                                    mDeleteMessages,
                                     fHolder.get(StoreStream.getMessages()),
                                     new Object[]{ message.getChannelId(), List.of(messageId) }
                                 );
