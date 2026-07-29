@@ -64,7 +64,7 @@ public final class MessageLogger extends Plugin {
 
         fHolder = StoreMessages.class.getDeclaredField("holder");
         fHolder.setAccessible(true);
-        holder = fHolder.get(StoreStream.getMessages());
+        holder = (StoreMessagesHolder) fHolder.get(StoreStream.getMessages());
 
         mDeleteMessages = StoreMessagesHolder.class.getDeclaredMethod("deleteMessages", long.class, List.class);
         mUpdateMessages = StoreMessagesHolder.class.getDeclaredMethod("updateMessages", com.discord.api.message.Message.class);
