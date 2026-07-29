@@ -137,6 +137,7 @@ public final class MessageLogger extends Plugin {
     }
 
     private CopyOnWriteArrayList<Long> hiddenEdits = new CopyOnWriteArrayList<>();
+    private var fHolder = StoreMessages.getDeclaredField("holder");
 
     private void patchWidgetChatListActions() throws Throwable {
         var hideIcon = Utils.getAppContext().getDrawable(com.lytefast.flexinput.R.e.design_ic_visibility_off).mutate();
@@ -162,11 +163,15 @@ public final class MessageLogger extends Plugin {
                         lay.addView(tw, lay.getChildCount());
                         tw.setOnClickListener((v) -> {
                             if (isDeleted) {
-                                StoreStream.getMessages().handleMessageDelete(new ModelMessageDelete(message.getChannelId(), messageId));
                                 sqlite.removeDeletedMessage(messageId);
+                                XposedBridge.invokeOriginalMethod(
+                                    StoreMessagesHolder.class.getDeclaredMethod("deleteMessages", long.class, List.class),
+                                    tHolder.get(StoreStream.getMessages()),
+                                    new Object[]{ message.getChannelId(), new List<Long>{ messageId } }
+                                );
                             }
                             if (isEdited) {
-                                //hiddenEdits.addIfAbsent(messageId);
+                                hiddenEdits.addIfAbsent(messageId);
                                 sqlite.removeEditedMessage(messageId);
                                 if(!isDeleted) StoreStream.getMessages().handleMessageUpdate(message.synthesizeApiMessage());
                             }
@@ -404,6 +409,7 @@ public final class MessageLogger extends Plugin {
                         " (deleted: " + TimeUtils.toReadableTimeString(context, record.deleteData.time, clock) + ")");
                 }
 
+                logger.debug(hiddenEdits.toString());
                 if ((record.editHistory.size() > 0) && (!hiddenEdits.contains(id))) {
                     var data = ((WidgetChatListItem) param.thisObject).adapter.getData();
                     if (data != null) {
