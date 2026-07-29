@@ -345,7 +345,7 @@ public final class MessageLogger extends Plugin {
                             record.message = msg;
                             record.editHistory.add(new MessageRecord.EditHistory(content, System.currentTimeMillis()));
                             if (sqlite.getBoolSetting("saveLogs", true)) sqlite.addNewMessageEdit(record);
-                            hiddenEdits.remove(messageId);
+                            hiddenEdits.remove(id);
                         }
                     }
                 }
