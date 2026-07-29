@@ -61,10 +61,13 @@ import kotlin.jvm.functions.Function1;
 public final class MessageLogger extends Plugin {
     public MessageLogger() throws Exception {
         settingsTab = new SettingsTab(PluginSettings.class, SettingsTab.Type.BOTTOM_SHEET);
+
         fHolder = StoreMessages.class.getDeclaredField("holder");
         fHolder.setAccessible(true);
+        holder = fHolder.get(StoreStream.getMessages());
+
         mDeleteMessages = StoreMessagesHolder.class.getDeclaredMethod("deleteMessages", long.class, List.class);
-        mDeleteMessages.setAccessible(true);
+        mUpdateMessages = StoreMessagesHolder.class.getDeclaredMethod("updateMessages", com.discord.api.message.Message.class);
     }
 
     public static WidgetChatList chatList;
@@ -143,8 +146,10 @@ public final class MessageLogger extends Plugin {
     }
 
     private CopyOnWriteArrayList<Long> hiddenEdits = new CopyOnWriteArrayList<>();
-    private Field fHolder;
     private Method mDeleteMessages;
+    private Method mUpdateMessages;
+    private Field fHolder;
+    private StoreMessagesHolder holder;
 
     private void patchWidgetChatListActions() throws Throwable {
         var hideIcon = Utils.getAppContext().getDrawable(com.lytefast.flexinput.R.e.design_ic_visibility_off).mutate();
@@ -171,18 +176,20 @@ public final class MessageLogger extends Plugin {
                         tw.setOnClickListener((v) -> {
                             if (isDeleted) {
                                 sqlite.removeDeletedMessage(messageId);
-                                try{
-                                    XposedBridge.invokeOriginalMethod(
-                                        mDeleteMessages,
-                                        fHolder.get(StoreStream.getMessages()),
-                                        new Object[]{ message.getChannelId(), List.of(messageId) }
-                                    );
-                                } catch(Exception e){}
+                                XposedBridge.invokeOriginalMethod(
+                                    mDeleteMessages,
+                                    holder,
+                                    new Object[]{ message.getChannelId(), List.of(messageId) }
+                                );
                             }
                             if (isEdited) {
                                 hiddenEdits.addIfAbsent(messageId);
                                 sqlite.removeEditedMessage(messageId);
-                                if(!isDeleted) StoreStream.getMessages().handleMessageUpdate(message.synthesizeApiMessage());
+                                if(!isDeleted) XposedBridge.invokeOriginalMethod(
+                                    mUpdateMessages,
+                                    holder,
+                                    new Object[]{ message.synthesizeApiMessage() }
+                                );
                             }
                             Utils.showToast("Removed From Logs");
                             ((WidgetChatListActions) cf.thisObject).dismiss();
