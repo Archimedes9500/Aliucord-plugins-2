@@ -166,6 +166,7 @@ public final class MessageLogger extends Plugin {
                                 sqlite.removeDeletedMessage(messageId);
                             }
                             if (isEdited) {
+                                hiddenEdits.addIfAbsent(messageId)
                                 StoreStream.getMessages().handleMessageUpdate(message.synthesizeApiMessage());
                                 sqlite.removeEditedMessage(messageId);
                             }
@@ -338,13 +339,13 @@ public final class MessageLogger extends Plugin {
                     ) {
                         String content;
                         if (origMsg != null && (content = origMsg.getContent()) != null && !content.equals(msg.getContent())) {
+                            hiddenEdits.remove(id);
                             var channelEdits = editedMessagesRecord.computeIfAbsent(channelId, k -> new ArrayList<>());
                             channelEdits.add(id);
                             var record = messageRecord.computeIfAbsent(id, k -> new MessageRecord());
                             record.message = msg;
                             record.editHistory.add(new MessageRecord.EditHistory(content, System.currentTimeMillis()));
                             if (sqlite.getBoolSetting("saveLogs", true)) sqlite.addNewMessageEdit(record);
-                            hiddenEdits.remove(id);
                         }
                     }
                 }
@@ -403,7 +404,7 @@ public final class MessageLogger extends Plugin {
                         " (deleted: " + TimeUtils.toReadableTimeString(context, record.deleteData.time, clock) + ")");
                 }
 
-                if (record.editHistory.size() > 0) {
+                if ((record.editHistory.size() > 0) && (!hiddenEdits.contains(id))) {
                     var data = ((WidgetChatListItem) param.thisObject).adapter.getData();
                     if (data != null) {
                         MessagePreprocessor messagePreprocessor = (MessagePreprocessor) getMessagePreprocessor.invoke(
