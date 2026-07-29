@@ -176,7 +176,7 @@ public final class MessageLogger extends Plugin {
                                 try {
                                     XposedBridge.invokeOriginalMethod(
                                         mDeleteMessages,
-                                        fHolder.get(StoreStream.getMessages());,
+                                        fHolder.get(StoreStream.getMessages()),
                                         new Object[]{ message.getChannelId(), List.of(messageId) }
                                     );
                                 } catch(e Exception) {}
@@ -187,7 +187,7 @@ public final class MessageLogger extends Plugin {
                                 if(!isDeleted) try{
                                     XposedBridge.invokeOriginalMethod(
                                         mUpdateMessages,
-                                        fHolder.get(StoreStream.getMessages());,
+                                        fHolder.get(StoreStream.getMessages()),
                                         new Object[]{ message.synthesizeApiMessage() }
                                     );
                                 } catch(e Exception) {}
