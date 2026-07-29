@@ -26,6 +26,7 @@ import com.aliucord.patcher.PreHook;
 import com.aliucord.wrappers.ChannelWrapper;
 import com.discord.databinding.WidgetGuildContextMenuBinding;
 import com.discord.models.deserialization.gson.InboundGatewayGsonParser;
+import com.discord.models.domain.ModelMessageDelete;
 import com.discord.models.message.Message;
 import com.discord.stores.*;
 import com.discord.utilities.color.ColorCompat;
@@ -47,6 +48,7 @@ import com.google.gson.stream.JsonReader;
 
 import java.io.StringReader;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import io.github.juby210.acplugins.messagelogger.*;
 import kotlin.jvm.functions.Function1;
@@ -134,6 +136,8 @@ public final class MessageLogger extends Plugin {
         sqlite.close();
     }
 
+    private CopyOnWriteArrayList<Long> hiddenEdits = new CopyOnWriteArrayList<>();
+
     private void patchWidgetChatListActions() throws Throwable {
         var hideIcon = Utils.getAppContext().getDrawable(com.lytefast.flexinput.R.e.design_ic_visibility_off).mutate();
 
@@ -158,9 +162,12 @@ public final class MessageLogger extends Plugin {
                         lay.addView(tw, lay.getChildCount());
                         tw.setOnClickListener((v) -> {
                             if (isDeleted) {
+                                StoreStream.getMessages().handleMessageDelete(new ModelMessageDelete(message.getChannelId(), messageId));
                                 sqlite.removeDeletedMessage(messageId);
                             }
                             if (isEdited) {
+                                hiddenEdits.addIfAbsent(messageId);
+                                StoreStream.getMessages().handleMessageUpdate(message.synthesizeApiMessage());
                                 sqlite.removeEditedMessage(messageId);
                             }
                             Utils.showToast("Removed From Logs");
@@ -338,6 +345,7 @@ public final class MessageLogger extends Plugin {
                             record.message = msg;
                             record.editHistory.add(new MessageRecord.EditHistory(content, System.currentTimeMillis()));
                             if (sqlite.getBoolSetting("saveLogs", true)) sqlite.addNewMessageEdit(record);
+                            hiddenEdits.remove(messageId);
                         }
                     }
                 }
@@ -396,7 +404,7 @@ public final class MessageLogger extends Plugin {
                         " (deleted: " + TimeUtils.toReadableTimeString(context, record.deleteData.time, clock) + ")");
                 }
 
-                if (record.editHistory.size() > 0) {
+                if (record.editHistory.size() > 0 && !hiddenEdits.contains(id)) {
                     var data = ((WidgetChatListItem) param.thisObject).adapter.getData();
                     if (data != null) {
                         MessagePreprocessor messagePreprocessor = (MessagePreprocessor) getMessagePreprocessor.invoke(
