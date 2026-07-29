@@ -168,7 +168,7 @@ public final class MessageLogger extends Plugin {
                                 XposedBridge.invokeOriginalMethod(
                                     StoreMessagesHolder.class.getDeclaredMethod("deleteMessages", long.class, List.class),
                                     tHolder.get(StoreStream.getMessages()),
-                                    new Object[]{ message.getChannelId(), new List<Long>{ messageId } }
+                                    new Object[]{ message.getChannelId(), new List.of(messageId) }
                                 );
                             }
                             if (isEdited) {
