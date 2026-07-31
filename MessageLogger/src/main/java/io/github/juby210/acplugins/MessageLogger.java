@@ -182,7 +182,7 @@ public final class MessageLogger extends Plugin {
                                 sqlite.removeDeletedMessage(messageId);
                                 disableDeletePatch.set(true);
                                 StoreStream.getMessages().handleMessageDelete(
-                                    new ModelMessageDelete(message.getChannelId, messageId)
+                                    new ModelMessageDelete(message.getChannelId(), messageId)
                                 );
                             }
                             if (isEdited) {
@@ -190,7 +190,7 @@ public final class MessageLogger extends Plugin {
                                 sqlite.removeEditedMessage(messageId);
                                 if(!isDeleted) {
                                     disableUpdatePatch.set(true);
-                                    StoreStream.getMessages().handleUpdateMessages(
+                                    StoreStream.getMessages().handleMessageUpdate(
                                         message.synthesizeApiMessage()
                                     );
                                     fakeDelete.set(true);
