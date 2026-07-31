@@ -195,7 +195,7 @@ public final class MessageLogger extends Plugin {
                                     );
                                     fakeDelete.set(true);
                                     StoreStream.getMessages().handleMessageDelete(
-                                        new ModelMessageDelete(message.getChannelId, messageId)
+                                        new ModelMessageDelete(message.getChannelId(), messageId)
                                     );
                                 }
                             }
