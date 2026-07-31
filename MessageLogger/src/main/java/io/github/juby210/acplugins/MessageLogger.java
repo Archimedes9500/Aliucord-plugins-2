@@ -50,6 +50,7 @@ import de.robv.android.xposed.XposedBridge;
 import java.lang.reflect.*;
 import java.io.StringReader;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import io.github.juby210.acplugins.messagelogger.*;
@@ -143,7 +144,12 @@ public final class MessageLogger extends Plugin {
         sqlite.close();
     }
 
+    private CopyOnWriteArrayList<Long> hiddenDeletes = new CopyOnWriteArrayList<>();
     private CopyOnWriteArrayList<Long> hiddenEdits = new CopyOnWriteArrayList<>();
+    private AtomicBoolean disableDeletePatch = new AtomicBoolean(false);
+    private AtomicBoolean disableUpdatePatch = new AtomicBoolean(false);
+    private AtomicBoolean fakeDelete = new AtomicBoolean(false);
+
     private Method mDeleteMessages;
     private Method mUpdateMessages;
     private Field fHolder;
@@ -172,23 +178,24 @@ public final class MessageLogger extends Plugin {
                         lay.addView(tw, lay.getChildCount());
                         tw.setOnClickListener((v) -> {
                             if (isDeleted) {
+                                hiddenDeletes.addIfAbsent(messageId);
                                 sqlite.removeDeletedMessage(messageId);
-                                try {
-                                    XposedBridge.invokeOriginalMethod(
-                                        mDeleteMessages,
-                                        fHolder.get(StoreStream.getMessages()),
-                                        new Object[]{ message.getChannelId(), List.of(messageId) }
-                                    );
-                                } catch(Exception e) {}
+                                disableDeletePatch.set(true);
+                                StoreStream.getMessages().handleMessageDelete(
+                                    new ModelMessageDelete(message.getChannelId, messageId)
+                                );
                             }
                             if (isEdited) {
                                 hiddenEdits.addIfAbsent(messageId);
                                 sqlite.removeEditedMessage(messageId);
-                                if(!isDeleted) try{
-                                    XposedBridge.invokeOriginalMethod(
-                                        mUpdateMessages,
-                                        fHolder.get(StoreStream.getMessages()),
-                                        new Object[]{ message.synthesizeApiMessage() }
+                                if(!isDeleted) {
+                                    disableUpdatePatch.set(true);
+                                    StoreStream.getMessages().handleUpdateMessages(
+                                        message.synthesizeApiMessage()
+                                    );
+                                    fakeDelete.set(true);
+                                    StoreStream.getMessages().handleMessageDelete(
+                                        new ModelMessageDelete(message.getChannelId, messageId)
                                     );
                                 } catch(Exception e) {}
                             }
@@ -302,6 +309,10 @@ public final class MessageLogger extends Plugin {
 
     private void patchDeleteMessages() {
         patcher.patch(StoreMessagesHolder.class, "deleteMessages", new Class<?>[]{ long.class, List.class }, new PreHook(param -> {
+            if (fakeDelete.compareAndSet(true, false)) {
+                param.setResult(null);
+                return;
+            }
             if (!sqlite.getBoolSetting("logDeletes", true)) {
                 return;
             }
@@ -319,6 +330,7 @@ public final class MessageLogger extends Plugin {
             for (var id : newDeleted) {
                 var msg = getCachedMessage(channelId, id);
                 if (msg == null) continue;
+                hiddenDeletes.remove(id);
                 // User author;
                 // if (!selfDelete && (author = msg.getAuthor()) != null && new CoreUser(author).getId() == StoreStream.getUsers().getMe().getId()) selfDelete = true;
                 var channelDeletes = deletedMessagesRecord.computeIfAbsent(channelId, k -> new ArrayList<>());
@@ -343,6 +355,7 @@ public final class MessageLogger extends Plugin {
 
     private void patchUpdateMessages() {
         patcher.patch(StoreMessagesHolder.class, "updateMessages", new Class<?>[]{ com.discord.api.message.Message.class }, new PreHook(param -> {
+            if(disableUpdatePatch.compareAndSet(true, false)) return;
             var msg = new Message((com.discord.api.message.Message) param.args[0]);
             var id = msg.getId();
             var edited = msg.getEditedTimestamp();
