@@ -197,7 +197,7 @@ public final class MessageLogger extends Plugin {
                                     StoreStream.getMessages().handleMessageDelete(
                                         new ModelMessageDelete(message.getChannelId, messageId)
                                     );
-                                } catch(Exception e) {}
+                                }
                             }
                             Utils.showToast("Removed From Logs");
                             ((WidgetChatListActions) cf.thisObject).dismiss();
