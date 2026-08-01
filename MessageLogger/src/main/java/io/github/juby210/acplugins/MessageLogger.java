@@ -183,7 +183,7 @@ public final class MessageLogger extends Plugin {
                                     StoreStream.getMessages().handleMessageUpdate(
                                         message.synthesizeApiMessage()
                                     );
-                                    updateMessage(messageId);
+                                    updateMessages(messageId);
                                 }
                             }
                             Utils.showToast("Removed From Logs");
