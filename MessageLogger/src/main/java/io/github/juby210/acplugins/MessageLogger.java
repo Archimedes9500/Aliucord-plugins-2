@@ -313,7 +313,7 @@ public final class MessageLogger extends Plugin {
                 param.setResult(null);
                 return;
             }
-            if (!sqlite.getBoolSetting("logDeletes", true)) {
+            if (!sqlite.getBoolSetting("logDeletes", true) || disableDeletePatch.compareAndSet(true, false)) {
                 return;
             }
             var channelId = (long) param.args[0];
