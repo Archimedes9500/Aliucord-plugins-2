@@ -309,7 +309,11 @@ public final class MessageLogger extends Plugin {
 
     private void patchDeleteMessages() {
         patcher.patch(StoreMessagesHolder.class, "deleteMessages", new Class<?>[]{ long.class, List.class }, new PreHook(param -> {
+            var newDeleted = (List<Long>) param.args[1];
             if (fakeDelete.compareAndSet(true, false)) {
+                for (var id : newDeleted) {
+                    updateMessages(id);
+                }
                 param.setResult(null);
                 return;
             }
@@ -325,7 +329,6 @@ public final class MessageLogger extends Plugin {
                 }
             }
 
-            var newDeleted = (List<Long>) param.args[1];
             var updateMessages = StoreStream.getChannelsSelected().getId() == channelId;
             for (var id : newDeleted) {
                 var msg = getCachedMessage(channelId, id);
