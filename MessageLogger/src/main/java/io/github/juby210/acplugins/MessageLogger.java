@@ -62,11 +62,6 @@ import kotlin.jvm.functions.Function1;
 public final class MessageLogger extends Plugin {
     public MessageLogger() throws Exception {
         settingsTab = new SettingsTab(PluginSettings.class, SettingsTab.Type.BOTTOM_SHEET);
-
-        fHolder = StoreMessages.class.getDeclaredField("holder");
-        fHolder.setAccessible(true);
-        mDeleteMessages = StoreMessagesHolder.class.getDeclaredMethod("deleteMessages", long.class, List.class);
-        mUpdateMessages = StoreMessagesHolder.class.getDeclaredMethod("updateMessages", com.discord.api.message.Message.class);
     }
 
     public static WidgetChatList chatList;
@@ -148,11 +143,6 @@ public final class MessageLogger extends Plugin {
     private CopyOnWriteArrayList<Long> hiddenEdits = new CopyOnWriteArrayList<>();
     private AtomicBoolean disableDeletePatch = new AtomicBoolean(false);
     private AtomicBoolean disableUpdatePatch = new AtomicBoolean(false);
-    private AtomicBoolean fakeDelete = new AtomicBoolean(false);
-
-    private Method mDeleteMessages;
-    private Method mUpdateMessages;
-    private Field fHolder;
 
     private void patchWidgetChatListActions() throws Throwable {
         var hideIcon = Utils.getAppContext().getDrawable(com.lytefast.flexinput.R.e.design_ic_visibility_off).mutate();
@@ -193,10 +183,7 @@ public final class MessageLogger extends Plugin {
                                     StoreStream.getMessages().handleMessageUpdate(
                                         message.synthesizeApiMessage()
                                     );
-                                    fakeDelete.set(true);
-                                    StoreStream.getMessages().handleMessageDelete(
-                                        new ModelMessageDelete(message.getChannelId(), messageId)
-                                    );
+                                    updateMessage(messageId);
                                 }
                             }
                             Utils.showToast("Removed From Logs");
@@ -309,14 +296,6 @@ public final class MessageLogger extends Plugin {
 
     private void patchDeleteMessages() {
         patcher.patch(StoreMessagesHolder.class, "deleteMessages", new Class<?>[]{ long.class, List.class }, new PreHook(param -> {
-            var newDeleted = (List<Long>) param.args[1];
-            if (fakeDelete.compareAndSet(true, false)) {
-                for (var id : newDeleted) {
-                    updateMessages(id);
-                }
-                param.setResult(null);
-                return;
-            }
             if (!sqlite.getBoolSetting("logDeletes", true) || disableDeletePatch.compareAndSet(true, false)) {
                 return;
             }
@@ -329,6 +308,7 @@ public final class MessageLogger extends Plugin {
                 }
             }
 
+            var newDeleted = (List<Long>) param.args[1];
             var updateMessages = StoreStream.getChannelsSelected().getId() == channelId;
             for (var id : newDeleted) {
                 var msg = getCachedMessage(channelId, id);
@@ -442,6 +422,7 @@ public final class MessageLogger extends Plugin {
                         " (deleted: " + TimeUtils.toReadableTimeString(context, record.deleteData.time, clock) + ")");
                 }
 
+                logger.debug(hiddenDeletes.toString());
                 logger.debug(hiddenEdits.toString());
                 if ((record.editHistory.size() > 0) && (!hiddenEdits.contains(id))) {
                     var data = ((WidgetChatListItem) param.thisObject).adapter.getData();
