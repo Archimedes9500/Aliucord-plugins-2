@@ -46,9 +46,7 @@ import com.discord.widgets.guilds.contextmenu.GuildContextMenuViewModel;
 import com.discord.widgets.guilds.contextmenu.WidgetGuildContextMenu;
 import com.facebook.drawee.span.DraweeSpanStringBuilder;
 import com.google.gson.stream.JsonReader;
-import de.robv.android.xposed.XposedBridge;
 
-import java.lang.reflect.*;
 import java.io.StringReader;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -61,7 +59,7 @@ import kotlin.jvm.functions.Function1;
 @SuppressLint("UseCompatLoadingForDrawables")
 @SuppressWarnings({ "unchecked", "CommentedOutCode" })
 public final class MessageLogger extends Plugin {
-    public MessageLogger() throws Exception {
+    public MessageLogger() {
         settingsTab = new SettingsTab(PluginSettings.class, SettingsTab.Type.BOTTOM_SHEET);
     }
 
