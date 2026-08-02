@@ -24,10 +24,8 @@ import com.aliucord.annotations.AliucordPlugin;
 import com.aliucord.entities.Plugin;
 import com.aliucord.patcher.Hook;
 import com.aliucord.patcher.PreHook;
-import com.aliucord.utils.ReflectUtils;
 import com.aliucord.wrappers.ChannelWrapper;
 import com.discord.databinding.WidgetGuildContextMenuBinding;
-import com.discord.databinding.WidgetChatListAdapterItemMessageBinding;
 import com.discord.models.deserialization.gson.InboundGatewayGsonParser;
 import com.discord.models.domain.ModelMessageDelete;
 import com.discord.models.message.Message;
@@ -406,7 +404,7 @@ public final class MessageLogger extends Plugin {
 
             logger.debug(hiddenDeletes.toString());
             if (hiddenDeletes.contains(id)) {
-                View root = ((WidgetChatListAdapterItemMessageBinding) Objects.requireNonNull(ReflectUtils.getField(param.thisObject, "binding"))).getRoot();
+                View root = ((WidgetChatListAdapterItemMessage) param.thisObject).itemView;
                 root.setVisibility(View.GONE);
                 root.setLayoutParams(new ViewGroup.LayoutParams(0, 0));
             }
