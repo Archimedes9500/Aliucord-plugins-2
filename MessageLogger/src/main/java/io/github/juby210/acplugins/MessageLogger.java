@@ -402,7 +402,7 @@ public final class MessageLogger extends Plugin {
             var record = messageRecord.get(id);
             if (record == null) return;
 
-            logger.debug(hiddenDeletes.toString());
+            //prevent removed deleted messages from sometimes re-appearing after app is sent to background
             if (hiddenDeletes.contains(id)) {
                 View root = ((WidgetChatListAdapterItemMessage) param.thisObject).itemView;
                 root.setVisibility(View.GONE);
@@ -430,7 +430,6 @@ public final class MessageLogger extends Plugin {
                         " (deleted: " + TimeUtils.toReadableTimeString(context, record.deleteData.time, clock) + ")");
                 }
 
-                logger.debug(hiddenEdits.toString());
                 if ((record.editHistory.size() > 0) && (!hiddenEdits.contains(id))) {
                     var data = ((WidgetChatListItem) param.thisObject).adapter.getData();
                     if (data != null) {
