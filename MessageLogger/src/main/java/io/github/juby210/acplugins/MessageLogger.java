@@ -401,6 +401,13 @@ public final class MessageLogger extends Plugin {
             var record = messageRecord.get(id);
             if (record == null) return;
 
+            logger.debug(hiddenDeletes.toString());
+            if (hiddenDeletes.contains(id)) {
+                View root = ((WidgetChatListAdapterItemMessageBinding) Objects.requireNonNull(ReflectUtils.getField(param.thisObject, "binding"))).getRoot();
+                root.setVisibility(View.GONE);
+                root.setLayoutParams(new ViewGroup.LayoutParams(0, 0));
+            }
+
             try {
                 var textView = (SimpleDraweeSpanTextView) param.args[0];
                 var builder = (DraweeSpanStringBuilder) mDraweeStringBuilder.get(textView);
@@ -422,7 +429,6 @@ public final class MessageLogger extends Plugin {
                         " (deleted: " + TimeUtils.toReadableTimeString(context, record.deleteData.time, clock) + ")");
                 }
 
-                logger.debug(hiddenDeletes.toString());
                 logger.debug(hiddenEdits.toString());
                 if ((record.editHistory.size() > 0) && (!hiddenEdits.contains(id))) {
                     var data = ((WidgetChatListItem) param.thisObject).adapter.getData();
