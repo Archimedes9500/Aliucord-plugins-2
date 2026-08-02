@@ -27,6 +27,7 @@ import com.aliucord.patcher.PreHook;
 import com.aliucord.utils.ReflectUtils;
 import com.aliucord.wrappers.ChannelWrapper;
 import com.discord.databinding.WidgetGuildContextMenuBinding;
+import com.discord.databinding.WidgetChatListAdapterItemMessageBinding;
 import com.discord.models.deserialization.gson.InboundGatewayGsonParser;
 import com.discord.models.domain.ModelMessageDelete;
 import com.discord.models.message.Message;
