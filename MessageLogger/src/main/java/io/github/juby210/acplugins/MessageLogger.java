@@ -173,6 +173,7 @@ public final class MessageLogger extends Plugin {
                                 StoreStream.getMessages().handleMessageDelete(
                                     new ModelMessageDelete(message.getChannelId(), messageId)
                                 );
+                                updateMessages(messageId);
                             }
                             if (isEdited) {
                                 hiddenEdits.addIfAbsent(messageId);
