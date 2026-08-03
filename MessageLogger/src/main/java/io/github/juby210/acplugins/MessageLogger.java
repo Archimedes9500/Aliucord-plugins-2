@@ -49,6 +49,7 @@ import com.google.gson.stream.JsonReader;
 import java.io.StringReader;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import io.github.juby210.acplugins.messagelogger.*;
 import kotlin.jvm.functions.Function1;
@@ -136,6 +137,7 @@ public final class MessageLogger extends Plugin {
         sqlite.close();
     }
 
+    private CopyOnWriteArrayList<Long> hiddenEdits = new CopyOnWriteArrayList<>();
     private AtomicBoolean disableDeletePatch = new AtomicBoolean(false);
     private AtomicBoolean disableUpdatePatch = new AtomicBoolean(false);
     private StoreStream storeStream = StoreStream.Companion.access$getCollector$p(StoreStream.Companion);
@@ -172,6 +174,7 @@ public final class MessageLogger extends Plugin {
                                 );
                             }
                             if (isEdited) {
+                                hiddenEdits.addIfAbsent(messageId);
                                 sqlite.removeEditedMessage(messageId);
                                 if(!isDeleted) {
                                     disableUpdatePatch.set(true);
@@ -352,6 +355,7 @@ public final class MessageLogger extends Plugin {
                     ) {
                         String content;
                         if (origMsg != null && (content = origMsg.getContent()) != null && !content.equals(msg.getContent())) {
+                            hiddenEdits.remove(id);
                             var channelEdits = editedMessagesRecord.computeIfAbsent(channelId, k -> new ArrayList<>());
                             channelEdits.add(id);
                             var record = messageRecord.computeIfAbsent(id, k -> new MessageRecord());
@@ -416,7 +420,7 @@ public final class MessageLogger extends Plugin {
                         " (deleted: " + TimeUtils.toReadableTimeString(context, record.deleteData.time, clock) + ")");
                 }
 
-                if (record.editHistory.size() > 0) {
+                if ((record.editHistory.size() > 0) && (!hiddenEdits.contains(id))) {
                     var data = ((WidgetChatListItem) param.thisObject).adapter.getData();
                     if (data != null) {
                         MessagePreprocessor messagePreprocessor = (MessagePreprocessor) getMessagePreprocessor.invoke(
