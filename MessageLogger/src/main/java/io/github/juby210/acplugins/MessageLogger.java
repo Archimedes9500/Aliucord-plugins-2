@@ -49,7 +49,6 @@ import com.google.gson.stream.JsonReader;
 import java.io.StringReader;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import io.github.juby210.acplugins.messagelogger.*;
 import kotlin.jvm.functions.Function1;
