@@ -140,6 +140,7 @@ public final class MessageLogger extends Plugin {
     private CopyOnWriteArrayList<Long> hiddenEdits = new CopyOnWriteArrayList<>();
     private AtomicBoolean disableDeletePatch = new AtomicBoolean(false);
     private AtomicBoolean disableUpdatePatch = new AtomicBoolean(false);
+    private StoreStream storeStream = StoreStream.access$getCollector$p(StoreStream.Companion);
 
     private void patchWidgetChatListActions() throws Throwable {
         var hideIcon = Utils.getAppContext().getDrawable(com.lytefast.flexinput.R.e.design_ic_visibility_off).mutate();
@@ -168,6 +169,7 @@ public final class MessageLogger extends Plugin {
                                 sqlite.removeDeletedMessage(messageId);
                                 disableDeletePatch.set(true);
                                 StoreStream.access$handleMessageDelete(
+                                    storeStream,
                                     new ModelMessageDelete(message.getChannelId(), messageId)
                                 );
                             }
@@ -177,6 +179,7 @@ public final class MessageLogger extends Plugin {
                                 if(!isDeleted) {
                                     disableUpdatePatch.set(true);
                                     StoreStream.access$handleMessageUpdate(
+                                        storeStream,
                                         message.synthesizeApiMessage()
                                     );
                                     updateMessages(messageId);
