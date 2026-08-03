@@ -137,7 +137,6 @@ public final class MessageLogger extends Plugin {
         sqlite.close();
     }
 
-    private CopyOnWriteArrayList<Long> hiddenEdits = new CopyOnWriteArrayList<>();
     private AtomicBoolean disableDeletePatch = new AtomicBoolean(false);
     private AtomicBoolean disableUpdatePatch = new AtomicBoolean(false);
     private StoreStream storeStream = StoreStream.Companion.access$getCollector$p(StoreStream.Companion);
@@ -167,6 +166,7 @@ public final class MessageLogger extends Plugin {
                         tw.setOnClickListener((v) -> {
                             if (isDeleted) {
                                 sqlite.removeDeletedMessage(messageId);
+                                removeCached(messageId);
                                 disableDeletePatch.set(true);
                                 StoreStream.access$handleMessageDelete(
                                     storeStream,
@@ -174,8 +174,8 @@ public final class MessageLogger extends Plugin {
                                 );
                             }
                             if (isEdited) {
-                                hiddenEdits.addIfAbsent(messageId);
                                 sqlite.removeEditedMessage(messageId);
+                                removeCached(messageId);
                                 if(!isDeleted) {
                                     disableUpdatePatch.set(true);
                                     StoreStream.access$handleMessageUpdate(
@@ -355,7 +355,6 @@ public final class MessageLogger extends Plugin {
                     ) {
                         String content;
                         if (origMsg != null && (content = origMsg.getContent()) != null && !content.equals(msg.getContent())) {
-                            hiddenEdits.remove(id);
                             var channelEdits = editedMessagesRecord.computeIfAbsent(channelId, k -> new ArrayList<>());
                             channelEdits.add(id);
                             var record = messageRecord.computeIfAbsent(id, k -> new MessageRecord());
@@ -420,7 +419,7 @@ public final class MessageLogger extends Plugin {
                         " (deleted: " + TimeUtils.toReadableTimeString(context, record.deleteData.time, clock) + ")");
                 }
 
-                if ((record.editHistory.size() > 0) && (!hiddenEdits.contains(id))) {
+                if (record.editHistory.size() > 0) {
                     var data = ((WidgetChatListItem) param.thisObject).adapter.getData();
                     if (data != null) {
                         MessagePreprocessor messagePreprocessor = (MessagePreprocessor) getMessagePreprocessor.invoke(
@@ -468,6 +467,13 @@ public final class MessageLogger extends Plugin {
 
     private void updateCached(Long id, Message message) {
         cachedMessages.put(id, message);
+    }
+
+    private void removeCached(Long id) {
+        cachedMessages.remove(id);
+        deletedMessagesRecord.remove(id);
+        editedMessagesRecord.remove(id);
+        messageRecord.remove(id);
     }
 
     // some display utils
