@@ -181,8 +181,9 @@ public final class MessageLogger extends Plugin {
                                         storeStream,
                                         message.synthesizeApiMessage()
                                     );
-                                    StoreStream.access$getDispatcher$p(StoreStream.getPresences().getStream()).schedule(() -> {
+                                    StoreStream.getDispatcherYesThisIsIntentional().schedule(() -> {
                                         updateMessages(messageId);
+                                        return kotlin.Unit.a;
                                     });    
                                 }
                             }
