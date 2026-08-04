@@ -181,7 +181,9 @@ public final class MessageLogger extends Plugin {
                                         storeStream,
                                         message.synthesizeApiMessage()
                                     );
-                                    updateMessages(messageId);
+                                    StoreStream.access$getDispatcher$p(StoreStream.getPresences().getStream()).schedule(() -> {
+                                        updateMessages(messageId);
+                                    });    
                                 }
                             }
                             Utils.showToast("Removed From Logs");
@@ -477,7 +479,7 @@ public final class MessageLogger extends Plugin {
 
     // some display utils
     private void markDeleted(SpannableStringBuilder builder, int start, int end) {
-        if (start != end) builder.setSpan(new ForegroundColorSpan(0xfff04747), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        if (start < end) builder.setSpan(new ForegroundColorSpan(0xfff04747), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
     private void customEditedLikeText(Context context, SpannableStringBuilder builder, CharSequence text) {
@@ -489,7 +491,7 @@ public final class MessageLogger extends Plugin {
 
     @SuppressWarnings("AccessStaticViaInstance")
     private void setEditedColor(Context context, SpannableStringBuilder builder, int start, int end) {
-        if (start != end) builder.setSpan(EditedMessageNode.Companion.access$getForegroundColorSpan(EditedMessageNode.Companion, context),
+        if (start < end) builder.setSpan(EditedMessageNode.Companion.access$getForegroundColorSpan(EditedMessageNode.Companion, context),
             start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 }
