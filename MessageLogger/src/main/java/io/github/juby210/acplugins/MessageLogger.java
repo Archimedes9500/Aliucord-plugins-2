@@ -74,35 +74,38 @@ public final class MessageLogger extends Plugin {
         deletedMessagesRecord.clear();
         messageRecord.clear();
         editedMessagesRecord.clear();
-        Cursor deletedMessages = sqlite.getAllDeletedMessages();
-        if (deletedMessages.moveToFirst() && deletedMessages.getCount() > 0) {
-            do {
-                long messageId = deletedMessages.getLong(0);
-                var deleteData = InboundGatewayGsonParser.fromJson(new JsonReader(new StringReader(deletedMessages.getString(1))), MessageRecord.DeleteData.class);
-                var deletedMessageRecord = InboundGatewayGsonParser.fromJson(new JsonReader(new StringReader(deletedMessages.getString(2))), MessageRecord.class);
-                long channelId = deletedMessageRecord.message.getChannelId();
-                deletedMessagesRecord.computeIfAbsent(channelId, k -> new ArrayList<>()).add(messageId);
-                var record = messageRecord.computeIfAbsent(messageId, k -> new MessageRecord());
-                record.message = deletedMessageRecord.message;
-                record.editHistory = deletedMessageRecord.editHistory;
-                record.deleteData = deleteData;
-            } while (deletedMessages.moveToNext());
-        }
-        deletedMessages.close();
-        Cursor editedMessages = sqlite.getAllEditedMessages();
-        if (editedMessages.moveToFirst() && editedMessages.getCount() > 0) {
-            do {
-                long messageId = editedMessages.getLong(0);
-                var editedMessageRecord = InboundGatewayGsonParser.fromJson(new JsonReader(new StringReader(editedMessages.getString(1))), MessageRecord.class);
-                long channelId = editedMessageRecord.message.getChannelId();
-                var record = messageRecord.computeIfAbsent(messageId, k -> new MessageRecord());
-                record.editHistory = editedMessageRecord.editHistory;
-                record.message = editedMessageRecord.message;
-                var editRecord = editedMessagesRecord.computeIfAbsent(channelId, k -> new ArrayList<>());
-                editRecord.add(messageId);
-            } while (editedMessages.moveToNext());
-        }
-        editedMessages.close();
+        StoreStream.getDispatcherYesThisIsIntentional().schedule(() -> {
+            Cursor deletedMessages = sqlite.getAllDeletedMessages();
+            if (deletedMessages.moveToFirst() && deletedMessages.getCount() > 0) {
+                do {
+                    long messageId = deletedMessages.getLong(0);
+                    var deleteData = InboundGatewayGsonParser.fromJson(new JsonReader(new StringReader(deletedMessages.getString(1))), MessageRecord.DeleteData.class);
+                    var deletedMessageRecord = InboundGatewayGsonParser.fromJson(new JsonReader(new StringReader(deletedMessages.getString(2))), MessageRecord.class);
+                    long channelId = deletedMessageRecord.message.getChannelId();
+                    deletedMessagesRecord.computeIfAbsent(channelId, k -> new ArrayList<>()).add(messageId);
+                    var record = messageRecord.computeIfAbsent(messageId, k -> new MessageRecord());
+                    record.message = deletedMessageRecord.message;
+                    record.editHistory = deletedMessageRecord.editHistory;
+                    record.deleteData = deleteData;
+                } while (deletedMessages.moveToNext());
+            }
+            deletedMessages.close();
+            Cursor editedMessages = sqlite.getAllEditedMessages();
+            if (editedMessages.moveToFirst() && editedMessages.getCount() > 0) {
+                do {
+                    long messageId = editedMessages.getLong(0);
+                    var editedMessageRecord = InboundGatewayGsonParser.fromJson(new JsonReader(new StringReader(editedMessages.getString(1))), MessageRecord.class);
+                    long channelId = editedMessageRecord.message.getChannelId();
+                    var record = messageRecord.computeIfAbsent(messageId, k -> new MessageRecord());
+                    record.editHistory = editedMessageRecord.editHistory;
+                    record.message = editedMessageRecord.message;
+                    var editRecord = editedMessagesRecord.computeIfAbsent(channelId, k -> new ArrayList<>());
+                    editRecord.add(messageId);
+                } while (editedMessages.moveToNext());
+            }
+            editedMessages.close();
+            return kotlin.Unit.a;
+        });
         new ReAdder(this, patcher);
 
         patcher.patch(WidgetChatList.class.getDeclaredConstructor(), new Hook(param -> chatList = (WidgetChatList) param.thisObject));
@@ -184,7 +187,7 @@ public final class MessageLogger extends Plugin {
                                     StoreStream.getDispatcherYesThisIsIntentional().schedule(() -> {
                                         updateMessages(messageId);
                                         return kotlin.Unit.a;
-                                    });    
+                                    });
                                 }
                             }
                             Utils.showToast("Removed From Logs");
